@@ -1,32 +1,8 @@
-// 1. Puesta en común de los tipos de datos que vamos a necesitar
-// para guardar nuestras tareas
-
-// 2. Se arma un array 
-
-// 3. Se hace evidente que los datos tienen que estar afuera
-// Creamos un archivo JSON
-
-// console.log(tareasJson)
-// console.log(typeof tareasJson)
-
-// Salto de Fé
-// Módulos nativos
-// const fs = require('fs');
-// let tareasJson = fs.readFileSync('tareas.json', 'utf-8');
-// let tareas = JSON.parse(tareasJson);
-
-// Micro desafío 1
-// transformar el código anterior en una función
-// function leerJson() {
-//    return JSON.parse(fs.readFileSync('tareas.json', 'utf-8'));;
-// }
-
-// 4. Se lleva el código a un modulo
 
 let archivoTareas = require('./tareas');
-//let archivoNuevaTarea = require('./nuevaTarea')
 
 let accion = process.argv[2];
+
 
 switch(accion) {
     case 'listar':
@@ -40,39 +16,45 @@ switch(accion) {
 
     case 'agregar': 
       let nuevaTarea = {
-        titulo: undefined, 
-        estado: "pendiente", 
-        cuerpo: null,
-    };
-        archivoTareas.escribirJSON(nuevaTarea);  
-        console.log('Nueva tarea!');
+        titulo: "Prueba 1", 
+        estado: "en progreso", 
+        cuerpo: null
+      };
+        archivoTareas.escribirJSON2(nuevaTarea, null, " ");  
+        console.log("Nueva tarea agregada!");
         break;
         
-    //case 'guardar':
+    case 'guardar': 
+        let listaTareasObj = archivoTareas.leerJSON();
+        let tareaAgregada = archivoTareas.leerJSON2();
+        listaTareasObj.push(tareaAgregada);
+        
+        //console.log(listaTareasObj);  
+        archivoTareas.escribirJSON(listaTareasObj);
+
+        console.log("Guardada!");
+        break; 
 
     case 'filtrar':
         let estado = process.argv[3];
         let todasTareas = archivoTareas.leerJSON();
         //let todasTareasObj = JSON.parse(todasTareas)
 
-        let tareasPorEstado = todasTareas.filter(function(tarea){
-            return tarea.estado == estado 
-        });
-tareasPorEstado.forEach( e => {
-    console.log(e)
-})
+         let tareasPorEstado = todasTareas.filter(function(tarea){
+            return tarea.estado === estado ; 
+         });
+         tareasPorEstado.forEach( e => {
+           console.log(e)
+             });
         // console.log(tareasPorEstado);
         break;
 
-    // Micro desafío 1
-    // Atajar el caso en que no se envíe un parámetro
     case undefined:
         console.log('Tenés que pasarme una acción');
         break;
 
-    // Micro desafío 2
     default:
-        console.log('No entiendo qué me estás pidiendo');
-        console.log('Las acciones disponibles son: listar');
+        console.log('No entiendo qué me estás pidiendo :( ');
+        console.log('Las acciones disponibles son: listar, agregar, guardar, filtrar o borrar.');
         break;
 }
